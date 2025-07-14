@@ -3,7 +3,25 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart, faStar, faVideo } from '@fortawesome/free-solid-svg-icons';
 import styles from './styles/Movie.module.css';
 
-function Movie(props) {
+type MoviesType = {
+    key: number,
+    updateLikedMovies: (movie: string) => void,
+    isLiked: boolean,
+    title: string,
+    overview: string,
+    poster: string,
+    voteAverage: number,
+    voteCount: number,
+}
+
+function Movie({
+    updateLikedMovies,
+    isLiked,
+    title,
+    overview,
+    poster,
+    voteAverage,
+    voteCount }: MoviesType) {
     const [watchCount, setWatchCount] = useState(0);
     const [personalNote, setPersonalNote] = useState(0);
 
@@ -11,7 +29,7 @@ function Movie(props) {
     const stars = [];
     for (let i = 0;i < 10;i++) {
         let style = {};
-        if (i < props.voteAverage - 1) {
+        if (i < voteAverage - 1) {
             style = { 'color': '#f1c40f' };
         }
         stars.push(<FontAwesomeIcon key={i} icon={faStar} style={style} />);
@@ -28,10 +46,10 @@ function Movie(props) {
 
     // Like movie
     const handleLikeMovie = () => {
-        props.updateLikedMovies(props.title);
+        updateLikedMovies(title);
     };
     let heartIconStyle = { 'cursor': 'pointer' };
-    if (props.isLiked) {
+    if (isLiked) {
         heartIconStyle = { 'color': '#e74c3c', 'cursor': 'pointer' };
     }
 
@@ -47,14 +65,14 @@ function Movie(props) {
 
     return (
         <div className={styles.card}>
-            <img className={styles.image} src={props.poster} alt={props.title} />
+            <img className={styles.image} src={poster} alt={title} />
             <div className={styles.textContainer}>
                 <div>
-                    <span className={styles.name}>{props.title}</span>
-                    <p className={styles.description}>{props.overview}</p>
+                    <span className={styles.name}>{title}</span>
+                    <p className={styles.description}>{overview}</p>
                 </div>
                 <div className={styles.iconContainer}>
-                    <span className={styles.vote}>{stars} ({props.voteCount})</span>
+                    <span className={styles.vote}>{stars} ({voteCount})</span>
                     <span>{personalStars} ({personalNote})</span>
                     <span><FontAwesomeIcon icon={faVideo} onClick={() => handleWatchMovie()} style={videoIconStyle} className="watch" /> ({watchCount})</span>
                     <span><FontAwesomeIcon icon={faHeart} onClick={() => handleLikeMovie()} style={heartIconStyle} className="like" /></span>
