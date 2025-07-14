@@ -4,6 +4,11 @@ import { Popover, Button } from "antd";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleXmark } from "@fortawesome/free-solid-svg-icons";
 import type { MovieType } from "./type/movie";
+import Movie from "./Movies";
+import logo from "./assets/logo.png"
+import logoLetter from "./assets/logoletter.png"
+
+
 export default function Home() {
 
     const [likedMovies, setLikedMovies] = useState<string[]>([]);
@@ -40,7 +45,6 @@ export default function Home() {
             .then((response) => response.json())
             .then((data) => {
                 setMoviesData(data.movies);
-                console.log("moviedata:", moviesData);
             });
     }, []);
 
@@ -49,8 +53,8 @@ export default function Home() {
         <div className={styles.main}>
             <div className={styles.header}>
                 <div className={styles.logocontainer}>
-                    <img src="logo.png" alt="Logo" />
-                    <img className={styles.logo} src="logoletter.png" alt="Letter logo" />
+                    <img src={logo} alt="Logo" />
+                    <img className={styles.logo} src={logoLetter} alt="Letter logo" />
                 </div>
                 <Popover
                     title="Liked movies"
@@ -62,7 +66,28 @@ export default function Home() {
                 </Popover>
             </div>
             <div className={styles.title}>LAST RELEASES</div>
-
+            <div className={styles.moviesContainer}>
+                {moviesData.map((data, i) => {
+                    const isLiked = likedMovies.some((movie) => movie === data.title);
+                    let overview = data.overview;
+                    if (overview.length > 250) {
+                        overview = overview.substr(0, 250);
+                        overview += " ...";
+                    }
+                    return (
+                        <Movie
+                            key={i}
+                            updateLikedMovies={updateLikedMovies}
+                            isLiked={isLiked}
+                            title={data.title}
+                            overview={overview}
+                            poster={"https://image.tmdb.org/t/p/w500" + data.poster_path}
+                            voteAverage={data.vote_average}
+                            voteCount={data.vote_count}
+                        />
+                    );
+                })}
+            </div>
         </div>
     )
 }
